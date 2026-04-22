@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentador de Casos Clínicos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;500;600&display=swap');
+
+        :root {
+            --primary: #1a5a7f;
+            --primary-light: #2a7aa8;
+            --accent: #e8885f;
+            --accent-light: #f5a885;
+            --success: #4a9d6f;
+            --error: #c4564a;
+            --bg: #fafbfc;
+            --bg-secondary: #f0f4f8;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --border: #e5e7eb;
+            --border-dark: #d1d5db;
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--bg) 0%, var(--bg-secondary) 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+        }
+
+        .divider {
+            width: 60px;
+            height: 3px;
+            background: var(--accent);
+            margin: 20px auto;
+            border-radius: 2px;
+        }
+
+        .form-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            padding: 40px;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .form-section {
+            margin-bottom: 40px;
+            padding-bottom: 40px;
+            border-bottom: 1px solid var(--border);
+            animation: slideInLeft 0.6s ease both;
+        }
+
+        .form-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .form-section:nth-child(1) { animation-delay: 0.1s; }
+        .form-section:nth-child(2) { animation-delay: 0.2s; }
+        .form-section:nth-child(3) { animation-delay: 0.3s; }
+        .form-section:nth-child(4) { animation-delay: 0.4s; }
+        .form-section:nth-child(5) { animation-delay: 0.5s; }
+        .form-section:nth-child(6) { animation-delay: 0.6s; }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 24px;
+            gap: 12px;
+        }
+
+        .section-icon {
+            font-size: 1.8rem;
+            min-width: 32px;
+            text-align: center;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary);
+            font-family: 'Playfair Display', serif;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+
+        label .required {
+            color: var(--error);
+            margin-left: 3px;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            background: white;
+            transition: all 0.2s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="date"]:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(26, 90, 127, 0.1);
+            background: white;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 40px;
+            justify-content: center;
+        }
+
+        button {
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 28px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-primary:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: var(--bg-secondary);
+            color: var(--primary);
+            border: 1.5px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border);
+            border-color: var(--border-dark);
+        }
+
+        .success-message {
+            display: none;
+            background: linear-gradient(135deg, var(--success) 0%, #3d8a5c 100%);
+            color: white;
+            padding: 16px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            animation: slideInDown 0.4s ease;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        .preview-box {
+            background: var(--bg);
+            border: 1px dashed var(--border-dark);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .preview-box.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .preview-box h3 {
+            color: var(--primary);
+            margin-bottom: 12px;
+            font-size: 1rem;
+        }
+
+        .preview-content {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: 'Courier New', monospace;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Mi Caso Clínico</h1>
+            <div class="divider"></div>
+            <p class="subtitle">Documenta y aprende de tu experiencia clínica</p>
+        </header>
+
+        <div class="form-container">
+            <div class="success-message" id="successMessage">
+                ✓ Caso documentado correctamente. Puedes copiar o descargar el contenido.
+            </div>
+
+            <form id="caseForm">
+                <!-- SECCIÓN 1: Resumen caso -->
+                <div class="form-section">
+                    <div class="section-header">
+                        <span class="section-icon">📋</span>
+                        <h2 class="section-title">Resumen caso</h2>
+                    </div>
+                    
+                    <div class="two-column">
+                        <div class="form-group">
+                            <label for="fecha">Fecha <span class="required">*</span></label>
+                            <input type="date" id="fecha" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="rotacion">Rotación <span class="required">*</span></label>
+                            <input type="text" id="rotacion" placeholder="Ej: Pediatría General" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="descripcion">Descripción del caso <span class="required">*</span></label>
+                        <textarea id="descripcion" placeholder="Describe el caso: edad del paciente, presentación clínica, contexto..." required></textarea>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 2: Exámenes -->
+                <div class="form-section">
+                    <div class="section-header">
+                        <span class="section-icon">🔬</span>
+                        <h2 class="section-title">Exámenes solicitados y resultados</h2>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="examenes">Exámenes y resultados <span class="required">*</span></label>
+                        <textarea id="examenes" placeholder="Qué exámenes solicitaste y qué mostraron. Incluye valores relevantes." required></textarea>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 3: Diagnósticos -->
+                <div class="form-section">
+                    <div class="section-header">
+                        <span class="section-icon">🎯</span>
+                        <h2 class="section-title">Diagnósticos de trabajo inicial</h2>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="diagnosticos">Tu diagnóstico inicial y diferencial <span class="required">*</span></label>
+                        <textarea id="diagnosticos" placeholder="Qué pensaste al inicio. Qué diagnósticos consideraste y por qué." required></textarea>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 4: Indicaciones -->
+                <div class="form-section">
+                    <div class="section-header">
+                        <span class="section-icon">💊</span>
+                        <h2 class="section-title">Indicaciones de tratamiento y conducta entregados</h2>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="indicaciones">Tratamiento y manejo <span class="required">*</span></label>
+                        <textarea id="indicaciones" placeholder="Qué indicaciones diste o se dieron. Tratamiento farmacológico, conducta, seguimiento, derivación." required></textarea>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 5: Conocimientos y dudas -->
+                <div class="form-section">
+                    <div class="section-header">
+                        <span class="section-icon">💡</span>
+                        <h2 class="section-title">Aprendizaje del caso</h2>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="conocimientos">Conocimientos nuevos aprendidos <span class="required">*</span></label>
+                        <textarea id="conocimientos" placeholder="Qué aprendiste de este caso. Conceptos nuevos, cambios en tu manejo, lecciones prácticas." required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dudas">Dudas sobre el caso / Errores cometidos <span class="required">*</span></label>
+                        <textarea id="dudas" placeholder="Qué dudas te quedan. Errores que cometiste o que identificaste. Puntos a mejorar." required></textarea>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 6: Perlas clínicas -->
+                <div class="form-section">
+                    <div class="section-header">
+                        <span class="section-icon">⭐</span>
+                        <h2 class="section-title">Perlas clínicas aprendidas</h2>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="perlas">Perlas clínicas o insights importantes</label>
+                        <textarea id="perlas" placeholder="Atajos diagnósticos, tips prácticos, cosas que recordarás la próxima vez, consejos de supervisores o colegas."></textarea>
+                    </div>
+                </div>
+
+                <!-- Botones -->
+                <div class="button-group">
+                    <button type="submit" class="btn-primary">Generar y Ver Documento</button>
+                    <button type="reset" class="btn-secondary">Limpiar Formulario</button>
+                </div>
+
+                <!-- Vista Previa -->
+                <div class="preview-box" id="previewBox">
+                    <h3>📄 Vista Previa de tu Documento</h3>
+                    <div class="preview-content" id="previewContent"></div>
+                    <div class="button-group" style="margin-top: 16px;">
+                        <button type="button" class="btn-primary" onclick="copyToClipboard()">Copiar al Portapapeles</button>
+                        <button type="button" class="btn-secondary" onclick="downloadAsText()">Descargar como TXT</button>
+                    </div>
+                </div>
+            </form>
+
+            <div class="footer">
+                <p>Documentador de Casos Clínicos • Especialidad en Pediatría</p>
+                <p style="margin-top: 8px; font-size: 0.85rem;">Aprende de cada experiencia clínica</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('caseForm');
+        const previewBox = document.getElementById('previewBox');
+        const previewContent = document.getElementById('previewContent');
+        const successMessage = document.getElementById('successMessage');
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            generatePreview();
+            successMessage.classList.add('show');
+            previewBox.classList.add('show');
+            
+            setTimeout(() => {
+                successMessage.classList.remove('show');
+            }, 4000);
+        });
+
+        function generatePreview() {
+            const data = {
+                fecha: document.getElementById('fecha').value,
+                rotacion: document.getElementById('rotacion').value,
+                descripcion: document.getElementById('descripcion').value,
+                examenes: document.getElementById('examenes').value,
+                diagnosticos: document.getElementById('diagnosticos').value,
+                indicaciones: document.getElementById('indicaciones').value,
+                conocimientos: document.getElementById('conocimientos').value,
+                dudas: document.getElementById('dudas').value,
+                perlas: document.getElementById('perlas').value
+            };
+
+            const text = `═══════════════════════════════════════════════════════════════
+CASO CLÍNICO
+═══════════════════════════════════════════════════════════════
+
+📋 RESUMEN CASO
+─────────────────────────────────────────────────────────────
+Fecha: ${data.fecha}
+Rotación: ${data.rotacion}
+
+Descripción:
+${data.descripcion}
+
+───────────────────────────────────────────────────────────────
+🔬 EXÁMENES SOLICITADOS Y RESULTADOS
+─────────────────────────────────────────────────────────────
+${data.examenes}
+
+───────────────────────────────────────────────────────────────
+🎯 DIAGNÓSTICOS DE TRABAJO INICIAL
+─────────────────────────────────────────────────────────────
+${data.diagnosticos}
+
+───────────────────────────────────────────────────────────────
+💊 INDICACIONES DE TRATAMIENTO Y CONDUCTA
+─────────────────────────────────────────────────────────────
+${data.indicaciones}
+
+───────────────────────────────────────────────────────────────
+💡 APRENDIZAJE DEL CASO
+─────────────────────────────────────────────────────────────
+Conocimientos nuevos:
+${data.conocimientos}
+
+Dudas / Errores cometidos:
+${data.dudas}
+
+${data.perlas ? `───────────────────────────────────────────────────────────────
+⭐ PERLAS CLÍNICAS APRENDIDAS
+─────────────────────────────────────────────────────────────
+${data.perlas}` : ''}
+
+═══════════════════════════════════════════════════════════════`;
+
+            previewContent.textContent = text;
+        }
+
+        function copyToClipboard() {
+            const text = previewContent.textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('✓ Copiado al portapapeles');
+            }).catch(() => {
+                alert('No se pudo copiar. Intenta de nuevo.');
+            });
+        }
+
+        function downloadAsText() {
+            const text = previewContent.textContent;
+            const fecha = document.getElementById('fecha').value || 'caso';
+            const element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+            element.setAttribute('download', `caso_${fecha}.txt`);
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+        }
+    </script>
+</body>
+</html>
